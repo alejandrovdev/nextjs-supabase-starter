@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'pnpm-lock.yaml',
+    'src/lib/supabase/database.types.ts',
   ]),
 ]);
 

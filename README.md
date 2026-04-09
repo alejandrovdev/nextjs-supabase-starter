@@ -120,6 +120,11 @@ Common utilities and globally shared components are located in `src/components`,
 | `pnpm run mailpit`                | Opens the local Mailpit interface to view captured emails.                |
 | `pnpm run openapi`                | Opens the OpenAPI documentation.                                          |
 | `pnpm run storage:sync`           | Seeds storage buckets.                                                    |
+| `pnpm run test`                   | Runs all tests (unit + integration).                                      |
+| `pnpm run test:unit`              | Runs unit tests only (service layer).                                     |
+| `pnpm run test:integration`       | Runs integration tests only (API procedures + middleware).                |
+| `pnpm run test:watch`             | Runs tests in watch mode (re-runs on file changes).                       |
+| `pnpm run test:coverage`          | Runs all tests with V8 coverage report.                                   |
 
 ## Development Guidelines
 
@@ -136,6 +141,34 @@ Drizzle is used **only for migration generation**, not as a runtime ORM. The sch
     ```bash
     pnpm run db:migrations:up
     ```
+
+### Testing
+
+The project uses [Vitest](https://vitest.dev/) for testing, organized in two layers:
+
+- **Unit tests** (`*.service.test.ts`): Test each service function in isolation by mocking the Supabase client. Located next to the service files they test.
+- **Integration tests** (`*.procedures.test.ts`): Test the full oRPC procedure pipeline (Zod validation, error middleware, auth middleware, handler, output validation) using `createRouterClient`. Located next to the procedure files they test.
+- **E2E tests** _(coming soon)_: End-to-end tests with Playwright against a running application and local Supabase instance.
+
+```bash
+pnpm run test                # Run all tests
+pnpm run test:unit           # Run unit tests only
+pnpm run test:integration    # Run integration tests only
+pnpm run test:watch          # Watch mode
+pnpm run test:coverage       # Coverage report
+```
+
+Test files follow the co-location pattern — each test file lives next to the source file it tests:
+
+```
+src/modules/<module>/server/
+  services/
+    <module>.service.ts           # Source
+    <module>.service.test.ts      # Unit test
+  procedures/
+    <module>.procedures.ts        # Source
+    <module>.procedures.test.ts   # Integration test
+```
 
 ### Code Quality
 
