@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1764369984899,
+      "tag": "0000_create-users-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1764369984900,
+      "tag": "0001_create_public_user_trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766872857325,
+      "tag": "0002_create-organizations-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1768066051959,
+      "tag": "0003_create-user-settings-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1768066051959,
+      "tag": "0004_create-public-user-settings-trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1768066051959,
+      "tag": "0005_create-public-user-update-trigger",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+import open from 'open';
+
+try {
+  process.loadEnvFile();
+} catch (error) {
+  console.error(error);
+  process.exit(1);
+}
+
+const DEFAULT_URL = 'http://localhost:54323';
+const URL = process.env.NEXT_PUBLIC_SUPABASE_DATABASE_STUDIO_URL ?? DEFAULT_URL;
+
+console.log(`\n🚀 Opening Database Studio at: \x1b[36m${URL}\x1b[0m\n`);
+
+open(URL);

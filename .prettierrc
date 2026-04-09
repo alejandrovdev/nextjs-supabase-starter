@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "semi": true,
+  "jsxSingleQuote": false,
+  "tabWidth": 2,
+  "plugins": [
+    "prettier-plugin-organize-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "printWidth": 80,
+  "tailwindFunctions": ["clsx", "cn", "twMerge"],
+  "tailwindStylesheet": "./src/app/globals.css"
+}

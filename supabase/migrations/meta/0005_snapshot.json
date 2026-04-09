@@ -1,0 +1,266 @@
+{
+  "id": "a98d5f77-d478-4375-9f69-11392404b06b",
+  "prevId": "9f4ed647-d7fc-4937-9386-f6a74b7d6e04",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.organizations": {
+      "name": "organizations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "length": 255,
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "length": 255,
+          "primaryKey": false,
+          "notNull": false
+        },
+        "logo_path": {
+          "name": "logo_path",
+          "type": "varchar",
+          "length": 255,
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "owner_id": {
+          "name": "owner_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "organizations_owner_id_users_id_fk": {
+          "name": "organizations_owner_id_users_id_fk",
+          "tableFrom": "organizations",
+          "tableTo": "users",
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "Allow individual user read their own organization": {
+          "name": "Allow individual user read their own organization",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (owner_id)::text)"
+        },
+        "Allow individual user create their own organization": {
+          "name": "Allow individual user create their own organization",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": ["authenticated"],
+          "withCheck": "((auth.jwt() ->> 'sub'::text) = (owner_id)::text)"
+        },
+        "Allow individual user update their own organization": {
+          "name": "Allow individual user update their own organization",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (owner_id)::text)",
+          "withCheck": "((auth.jwt() ->> 'sub'::text) = (owner_id)::text)"
+        },
+        "Allow individual user delete their own organization": {
+          "name": "Allow individual user delete their own organization",
+          "as": "PERMISSIVE",
+          "for": "DELETE",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (owner_id)::text)"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.user_settings": {
+      "name": "user_settings",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "default_organization_id": {
+          "name": "default_organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_settings_user_id_users_id_fk": {
+          "name": "user_settings_user_id_users_id_fk",
+          "tableFrom": "user_settings",
+          "tableTo": "users",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "user_settings_default_organization_id_organizations_id_fk": {
+          "name": "user_settings_default_organization_id_organizations_id_fk",
+          "tableFrom": "user_settings",
+          "tableTo": "organizations",
+          "columnsFrom": ["default_organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_settings_userId_unique": {
+          "name": "user_settings_userId_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id"]
+        }
+      },
+      "policies": {
+        "Allow individual user read their own settings": {
+          "name": "Allow individual user read their own settings",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (user_id)::text)"
+        },
+        "Allow individual user create their own settings": {
+          "name": "Allow individual user create their own settings",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": ["authenticated"],
+          "withCheck": "((auth.jwt() ->> 'sub'::text) = (user_id)::text)"
+        },
+        "Allow individual user update their own settings": {
+          "name": "Allow individual user update their own settings",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (user_id)::text)",
+          "withCheck": "((auth.jwt() ->> 'sub'::text) = (user_id)::text)"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar",
+          "length": 255,
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar",
+          "length": 255,
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "users_id_users_id_fk": {
+          "name": "users_id_users_id_fk",
+          "tableFrom": "users",
+          "tableTo": "users",
+          "schemaTo": "auth",
+          "columnsFrom": ["id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "Allow individual user access to their own user": {
+          "name": "Allow individual user access to their own user",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": ["authenticated"],
+          "using": "((auth.jwt() ->> 'sub'::text) = (id)::text)"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
